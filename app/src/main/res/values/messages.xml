@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_image" translatable="false">Share image via</string>
+    <string name="no_contributions_yet" translatable="false">You haven\'t made any contributions yet</string>
+    <string name="ok" translatable="false">Ok</string>
+</resources>

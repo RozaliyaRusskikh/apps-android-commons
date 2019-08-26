@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fetching_achievements_failed" translatable="false">Fetching achievements statistics failed</string>
+    <string name="success" translatable="false">success</string>
+    <string name="error" translatable="false">Error:</string>
+    <string name="fetching_upload_failed" translatable="false">Fetching upload count failed</string>
+    <string name="current_account_null" translatable="false">Current account is null</string>
+
+</resources>

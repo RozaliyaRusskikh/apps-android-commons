@@ -156,8 +156,8 @@ public class AchievementsActivity extends NavigationBaseActivity {
      */
     @OnClick(R.id.achievement_info)
     public void showInfoDialog(){
-        launchAlert(getResources().getString(R.string.Achievements)
-                ,getResources().getString(R.string.achievements_info_message));
+        launchAlert(getString(R.string.Achievements)
+                ,getString(R.string.achievements_info_message));
     }
 
     @Override
@@ -181,25 +181,29 @@ public class AchievementsActivity extends NavigationBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private static final String SCREEN_IMAGE = "screen.png";
+    private static final String PROVIDER = ".provider";
+    private static final String IMAGE_PNG = "image/png";
+
     /**
      * To take bitmap and store it temporary storage and share it
      * @param bitmap
      */
     void shareScreen(Bitmap bitmap) {
         try {
-            File file = new File(this.getExternalCacheDir(), "screen.png");
+            File file = new File(this.getExternalCacheDir(), SCREEN_IMAGE);
             FileOutputStream fOut = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
             fOut.flush();
             fOut.close();
             file.setReadable(true, false);
-            Uri fileUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName()+".provider", file);
+            Uri fileUri = FileProvider.getUriForFile(getApplicationContext(), getPackageName()+ PROVIDER, file);
             grantUriPermission(getPackageName(), fileUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
             final Intent intent = new Intent(android.content.Intent.ACTION_SEND);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            intent.setType("image/png");
-            startActivity(Intent.createChooser(intent, "Share image via"));
+            intent.setType(IMAGE_PNG);
+            startActivity(Intent.createChooser(intent, getString(R.string.share_image)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -223,20 +227,20 @@ public class AchievementsActivity extends NavigationBaseActivity {
                                     if (response != null) {
                                         setUploadCount(Achievements.from(response));
                                     } else {
-                                        Timber.d("success");
+                                        Timber.d(getString(R.string.success));
                                         layoutImageReverts.setVisibility(View.INVISIBLE);
                                         imageView.setVisibility(View.INVISIBLE);
                                         showSnackBarWithRetry();
                                     }
                                 },
                                 t -> {
-                                    Timber.e(t, "Fetching achievements statistics failed");
+                                    Timber.e(t, getString(R.string.fetching_achievements_failed));
                                     showSnackBarWithRetry();
                                 }
                         ));
             }
             catch (Exception e){
-                Timber.d(e+"success");
+                Timber.d(e+getString(R.string.success));
             }
         }
     }
@@ -251,7 +255,7 @@ public class AchievementsActivity extends NavigationBaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(edits -> wikidataEditsText.setText(String.valueOf(edits)), e -> {
-                    Timber.e("Error:" + e);
+                    Timber.e(getString(R.string.error) + e);
                 }));
     }
 
@@ -265,7 +269,7 @@ public class AchievementsActivity extends NavigationBaseActivity {
      * Shows a generic error toast when error occurs while loading achievements or uploads
      */
     private void onError() {
-        ViewUtil.showLongToast(this, getResources().getString(R.string.error_occurred));
+        ViewUtil.showLongToast(this, getString(R.string.error_occurred));
         progressBar.setVisibility(View.GONE);
     }
 
@@ -281,7 +285,7 @@ public class AchievementsActivity extends NavigationBaseActivity {
                     .subscribe(
                             uploadCount -> setAchievementsUploadCount(achievements, uploadCount),
                             t -> {
-                                Timber.e(t, "Fetching upload count failed");
+                                Timber.e(t, getString(R.string.fetching_upload_failed));
                                 onError();
                             }
                     ));
@@ -316,8 +320,8 @@ public class AchievementsActivity extends NavigationBaseActivity {
 
     private void setZeroAchievements() {
         AlertDialog.Builder builder=new AlertDialog.Builder(this)
-                .setMessage("You haven't made any contributions yet")
-                .setPositiveButton("Ok", (dialog, which) -> {
+                .setMessage(getString(R.string.no_contributions_yet))
+                .setPositiveButton(getString(R.string.ok), (dialog, which) -> {
                 });
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -340,7 +344,7 @@ public class AchievementsActivity extends NavigationBaseActivity {
         imageRevertsProgressbar.setProgress(notRevertPercentage);
         String revertPercentage = Integer.toString(notRevertPercentage);
         imageRevertsProgressbar.setProgressTextFormatPattern(revertPercentage + "%%");
-        imagesRevertLimitText.setText(getResources().getString(R.string.achievements_revert_limit_message)+ levelInfo.getMinNonRevertPercentage() + "%");
+        imagesRevertLimitText.setText(getString(R.string.achievements_revert_limit_message)+ levelInfo.getMinNonRevertPercentage() + "%");
     }
 
     /**
@@ -427,38 +431,38 @@ public class AchievementsActivity extends NavigationBaseActivity {
 
     @OnClick(R.id.images_upload_info)
     public void showUploadInfo(){
-        launchAlert(getResources().getString(R.string.images_uploaded)
-                ,getResources().getString(R.string.images_uploaded_explanation));
+        launchAlert(getString(R.string.images_uploaded)
+                ,getString(R.string.images_uploaded_explanation));
     }
 
     @OnClick(R.id.images_reverted_info)
     public void showRevertedInfo(){
-        launchAlert(getResources().getString(R.string.image_reverts)
-                ,getResources().getString(R.string.images_reverted_explanation));
+        launchAlert(getString(R.string.image_reverts)
+                ,getString(R.string.images_reverted_explanation));
     }
 
     @OnClick(R.id.images_used_by_wiki_info)
     public void showUsedByWikiInfo(){
-        launchAlert(getResources().getString(R.string.images_used_by_wiki)
-                ,getResources().getString(R.string.images_used_explanation));
+        launchAlert(getString(R.string.images_used_by_wiki)
+                ,getString(R.string.images_used_explanation));
     }
 
     @OnClick(R.id.images_nearby_info)
     public void showImagesViaNearbyInfo(){
-        launchAlert(getResources().getString(R.string.statistics_wikidata_edits)
-                ,getResources().getString(R.string.images_via_nearby_explanation));
+        launchAlert(getString(R.string.statistics_wikidata_edits)
+                ,getString(R.string.images_via_nearby_explanation));
     }
 
     @OnClick(R.id.images_featured_info)
     public void showFeaturedImagesInfo(){
-        launchAlert(getResources().getString(R.string.statistics_featured)
-                ,getResources().getString(R.string.images_featured_explanation));
+        launchAlert(getString(R.string.statistics_featured)
+                ,getString(R.string.images_featured_explanation));
     }
 
     @OnClick(R.id.thanks_received_info)
     public void showThanksReceivedInfo(){
-        launchAlert(getResources().getString(R.string.statistics_thanks)
-                ,getResources().getString(R.string.thanks_received_explanation));
+        launchAlert(getString(R.string.statistics_thanks)
+                ,getString(R.string.thanks_received_explanation));
     }
 
     /**
@@ -483,8 +487,8 @@ public class AchievementsActivity extends NavigationBaseActivity {
     private boolean checkAccount(){
         Account currentAccount = sessionManager.getCurrentAccount();
         if (currentAccount == null) {
-            Timber.d("Current account is null");
-            ViewUtil.showLongToast(this, getResources().getString(R.string.user_not_logged_in));
+            Timber.d(getString(R.string.current_account_null));
+            ViewUtil.showLongToast(this, getString(R.string.user_not_logged_in));
             sessionManager.forceLogin(this);
             return false;
         }
